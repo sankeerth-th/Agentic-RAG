@@ -1,0 +1,42 @@
+[project]
+name = "agentic-rag-lab"
+version = "0.1.0"
+requires-python = ">=3.12,<3.14"
+dependencies = []
+
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = ["apps/api", "packages/contracts", "workers/ingestion"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8,<10",
+    "ruff>=0.11,<1",
+    "mypy>=1.15,<2",
+    "httpx2>=2.13.1,<3",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["apps/api", "packages/contracts/src", "workers/ingestion/src"]
+addopts = "-ra"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.mypy]
+python_version = "3.12"
+files = ["apps/api/app", "packages/contracts/src", "workers/ingestion/src", "scripts"]
+check_untyped_defs = true
+disallow_untyped_defs = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+module = ["boto3.*", "botocore.*", "celery.*"]
+ignore_missing_imports = true
