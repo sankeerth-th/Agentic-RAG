@@ -1,0 +1,49 @@
+name: agentic-rag
+services:
+  postgres:
+    image: postgres:16-alpine@sha256:721873c34ceb9f8d8fc265984940dc982404c105f19ad51be9fdc5970a6080ea
+    environment:
+      POSTGRES_USER: rag
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local-rag-password}
+      POSTGRES_DB: rag
+    ports: ["127.0.0.1:55432:5432"]
+    volumes: ["postgres_data:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rag -d rag"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+  redis:
+    image: redis:7-alpine@sha256:858f009f9709ce576febc734aa78b8f6d624b82571f9ddb6bda4377c833b3499
+    command: ["redis-server", "--appendonly", "yes"]
+    ports: ["127.0.0.1:56379:6379"]
+    volumes: ["redis_data:/data"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+  qdrant:
+    image: qdrant/qdrant:v1.19.1@sha256:12364fe851b9f17356fc88189fc06d1b521262e04659ec7345975b00c9246a10
+    ports: ["127.0.0.1:56333:6333"]
+    volumes: ["qdrant_data:/qdrant/storage"]
+  minio:
+    image: agentic-rag-minio:RELEASE.2025-10-15T17-29-55Z
+    build:
+      context: .
+      dockerfile: minio.Dockerfile
+    environment:
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY_ID:-local-rag-user}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_ACCESS_KEY:-local-rag-password}
+    ports: ["127.0.0.1:59000:9000", "127.0.0.1:59001:9001"]
+    volumes: ["minio_data:/data"]
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:9000/minio/health/live"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+volumes:
+  postgres_data:
+  redis_data:
+  qdrant_data:
+  minio_data:

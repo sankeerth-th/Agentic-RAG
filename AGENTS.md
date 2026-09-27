@@ -57,8 +57,12 @@ HTTP routes under `/api/v1/`, plus `/health` and `/ready`. Generate TypeScript f
 OpenAPI; never maintain parallel handwritten API models. Contract changes require
 explicit review. Do not expose speculative endpoints as working functionality.
 
-S01 must supply documented, executable lint, type, test, migration, contract and
-service checks before its PR. Run those checks, a Ponytail review and full diff
+Run `uv run ruff check .`, `uv run ruff format --check .`, `uv run mypy`,
+`uv run pytest tests/unit tests/contract`, `pnpm contracts:check` and
+`uv build --all-packages`. With local services initialized, run `uv run alembic check`,
+`uv run pytest tests/integration` and `uv run python scripts/smoke_processes.py`.
+See CONTRIBUTING.md for setup and disposable-database migration checks.
+Run those checks, a Ponytail review and full diff
 review after Graphify and before pushing. Use deterministic small test fixtures;
 large datasets and provider calls do not belong in normal CI. Never commit `.env`,
 credentials, secrets, raw corpora, generated caches or debug artifacts.

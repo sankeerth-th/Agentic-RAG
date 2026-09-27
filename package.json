@@ -1,0 +1,13 @@
+{
+  "name": "agentic-rag-lab",
+  "private": true,
+  "packageManager": "pnpm@10.30.3",
+  "scripts": {
+    "contracts:generate": "uv run python scripts/export_openapi.py && openapi-typescript packages/contracts/openapi.json --default-non-nullable false --immutable -o packages/contracts/generated/api.d.ts",
+    "contracts:check": "uv run python scripts/check_contracts.py && tsc --noEmit"
+  },
+  "devDependencies": {
+    "openapi-typescript": "7.13.0",
+    "typescript": "5.9.3"
+  }
+}

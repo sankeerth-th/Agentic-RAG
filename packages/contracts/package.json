@@ -1,0 +1,6 @@
+{
+  "name": "@agentic-rag/contracts",
+  "version": "0.1.0",
+  "private": true,
+  "types": "generated/api.d.ts"
+}

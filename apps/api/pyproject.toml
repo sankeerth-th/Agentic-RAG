@@ -1,0 +1,19 @@
+[project]
+name = "rag-api"
+version = "0.1.0"
+requires-python = ">=3.12,<3.14"
+dependencies = [
+  "rag-contracts", "fastapi>=0.115,<1", "uvicorn>=0.34,<1",
+  "pydantic-settings>=2.8,<3", "sqlalchemy>=2.0,<2.1", "alembic>=1.15,<2",
+  "psycopg[binary]>=3.2,<4", "qdrant-client>=1.13,<2", "redis>=5,<7", "boto3>=1.37,<2",
+]
+
+[tool.uv.sources]
+rag-contracts = { workspace = true }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
